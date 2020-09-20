@@ -47,9 +47,10 @@ GLuint loadFragmentShader()
 {
     const char* fragmentShaderSource = "#version 330 core\n"
         "out vec4 FragColor;\n"
+        "uniform vec4 ourColor;"
         "void main()\n"
         "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "   FragColor = ourColor;\n"
         "}\0";
 
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -160,6 +161,10 @@ int main()
         return -1;
     }
 
+    int nrAttributes;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+    std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+
     glViewport(0, 0, 800, 600);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -172,6 +177,8 @@ int main()
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 
+    auto vertexColorUniform = glGetUniformLocation(program, "ourColor");
+
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while (!glfwWindowShouldClose(window))
@@ -182,6 +189,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(program);
+        glUniform4f(vertexColorUniform, 1.0f, 1.0f, 0.0f, 1.0f);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
