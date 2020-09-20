@@ -22,9 +22,12 @@ GLuint loadVertexShader()
 {
     const char* vertexShaderSource = "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec3 aColor;\n"
+        "out vec3 ourColor;\n"
         "void main()\n"
         "{\n"
         "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
+        "   ourColor = aColor;\n"
         "}\0";
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -47,10 +50,10 @@ GLuint loadFragmentShader()
 {
     const char* fragmentShaderSource = "#version 330 core\n"
         "out vec4 FragColor;\n"
-        "uniform vec4 ourColor;"
+        "in vec3 ourColor;"
         "void main()\n"
         "{\n"
-        "   FragColor = ourColor;\n"
+        "   FragColor = vec4(ourColor, 1.0f);\n"
         "}\0";
 
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -96,8 +99,14 @@ GLuint loadVAO(GLuint vbo, GLuint ebo)
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    //vertices
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    //colors
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     return vao;
 }
@@ -105,10 +114,10 @@ GLuint loadVAO(GLuint vbo, GLuint ebo)
 GLuint loadVBO()
 {
     const std::vector<GLfloat> vertices = {
-        0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
     };
 
     GLuint vboId;
@@ -177,7 +186,7 @@ int main()
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 
-    auto vertexColorUniform = glGetUniformLocation(program, "ourColor");
+    //auto vertexColorUniform = glGetUniformLocation(program, "ourColor");
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -189,7 +198,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(program);
-        glUniform4f(vertexColorUniform, 1.0f, 1.0f, 0.0f, 1.0f);
+        //glUniform4f(vertexColorUniform, 1.0f, 1.0f, 0.0f, 1.0f);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
