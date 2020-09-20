@@ -18,23 +18,6 @@ void processInput(GLFWwindow* window)
     }
 }
 
-GLuint loadVBO()
-{
-    const std::vector<GLfloat> vertices = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-    };
-
-    GLuint vboId;
-    glGenBuffers(1, &vboId);
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(decltype(vertices)::value_type), vertices.data(), GL_STATIC_DRAW);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    return vboId;
-}
-
 GLuint loadVertexShader()
 {
     const char* vertexShaderSource = "#version 330 core\n"
@@ -104,17 +87,51 @@ GLuint loadShaderProgram(GLuint vertex, GLuint fragment)
     return program;
 }
 
-GLuint loadVAO(GLuint vbo)
+GLuint loadVAO(GLuint vbo, GLuint ebo)
 {
     GLuint vao;
     glGenVertexArrays(1, &vao);
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     return vao;
+}
+
+GLuint loadVBO()
+{
+    const std::vector<GLfloat> vertices = {
+        0.5f, 0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        -0.5f, 0.5f, 0.0f,
+    };
+
+    GLuint vboId;
+    glGenBuffers(1, &vboId);
+    glBindBuffer(GL_ARRAY_BUFFER, vboId);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(decltype(vertices)::value_type), vertices.data(), GL_STATIC_DRAW);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    return vboId;
+}
+
+GLuint loadEBO()
+{
+    const std::vector<GLuint> indices = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(decltype(indices)::value_type), indices.data(), GL_STATIC_DRAW);
+
+    return ebo;
 }
 
 int main()
@@ -147,13 +164,13 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     auto vbo = loadVBO();
+    auto ebo = loadEBO();
     auto vertex = loadVertexShader();
     auto fragment = loadFragmentShader();
     auto program = loadShaderProgram(vertex, fragment);
-    auto vao = loadVAO(vbo);
+    auto vao = loadVAO(vbo, ebo);
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-    
 
     while (!glfwWindowShouldClose(window))
     {
@@ -164,7 +181,7 @@ int main()
 
         glUseProgram(program);
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
