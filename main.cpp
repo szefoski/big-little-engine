@@ -100,7 +100,7 @@ int main()
     }
 
     ProgramShader programShader;
-    programShader.Compile("shaders/simple.vertex", "shaders/simple.frag");
+    programShader.Compile("shaders/simple.vert", "shaders/simple.frag");
 
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
