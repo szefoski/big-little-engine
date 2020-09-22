@@ -22,7 +22,7 @@ void Shader::Compile(const std::filesystem::path& vertexPath, const std::filesys
         assert(false);
     }
 
-    if (!CompileShader(GL_FRAGMENT_SHADER, fragment.data(), m_vertexId))
+    if (!CompileShader(GL_FRAGMENT_SHADER, fragment.data(), m_fragmentId))
     {
         assert(false);
     }
