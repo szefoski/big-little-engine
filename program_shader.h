@@ -4,11 +4,11 @@
 #include <filesystem>
 #include <string>
 
-class Shader
+class ProgramShader
 {
 public:
-    Shader() = default;
-    Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath);
+    ProgramShader() = default;
+    ProgramShader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath);
     void Compile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath);
     void Activate() const
     {

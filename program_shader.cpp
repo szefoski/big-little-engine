@@ -1,18 +1,18 @@
-#include "shader.h"
+#include "program_shader.h"
 
 #include "utils.h"
 
 #include <array>
 #include <cassert>
-#include <vector>
 #include <iostream>
+#include <vector>
 
-Shader::Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath)
+ProgramShader::ProgramShader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath)
 {
     Compile(vertexPath, fragmentPath);
 }
 
-void Shader::Compile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath)
+void ProgramShader::Compile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath)
 {
     auto vertex = Utils::ReadFileVecChar(vertexPath);
     auto fragment = Utils::ReadFileVecChar(fragmentPath);
@@ -40,12 +40,12 @@ void Shader::Compile(const std::filesystem::path& vertexPath, const std::filesys
     glGetProgramiv(m_id, GL_LINK_STATUS, &success);
     if (!success)
     {
-        glGetProgramInfoLog(m_id, infoLog.size(), nullptr, infoLog.data());
+        glGetProgramInfoLog(m_id, static_cast<GLsizei>(infoLog.size()), nullptr,  infoLog.data());
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog.data() << std::endl;
     }
 }
 
-bool Shader::CompileShader(GLenum type, const char* source, GLuint& id)
+bool ProgramShader::CompileShader(GLenum type, const char* source, GLuint& id)
 {
     int success;
     std::array<char, 512> infoLog;
@@ -57,7 +57,7 @@ bool Shader::CompileShader(GLenum type, const char* source, GLuint& id)
     glGetShaderiv(id, GL_COMPILE_STATUS, &success);
     if (!success)
     {
-        glGetShaderInfoLog(id, infoLog.size(), nullptr, infoLog.data());
+        glGetShaderInfoLog(id, static_cast<GLsizei>(infoLog.size()), nullptr, infoLog.data());
         std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog.data() << std::endl;
         return false;
     };

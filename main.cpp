@@ -1,4 +1,4 @@
-#include "shader.h"
+#include "program_shader.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,79 +18,6 @@ void processInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
-}
-
-GLuint loadVertexShader()
-{
-    const char* vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "layout (location = 1) in vec3 aColor;\n"
-        "out vec3 ourColor;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
-        "   ourColor = aColor;\n"
-        "}\0";
-
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-    GLint success;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        char info[512];
-        glGetShaderInfoLog(vertexShader, 512, nullptr, info);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << info << std::endl;
-    }
-
-    return vertexShader;
-}
-
-GLuint loadFragmentShader()
-{
-    const char* fragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "in vec3 ourColor;"
-        "void main()\n"
-        "{\n"
-        "   FragColor = vec4(ourColor, 1.0f);\n"
-        "}\0";
-
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(fragmentShader);
-
-    GLint success;
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        char info[512];
-        glGetShaderInfoLog(fragmentShader, 512, nullptr, info);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << info << std::endl;
-    }
-
-    return fragmentShader;
-}
-
-GLuint loadShaderProgram(GLuint vertex, GLuint fragment)
-{
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vertex);
-    glAttachShader(program, fragment);
-    glLinkProgram(program);
-
-    GLint success;
-    glGetProgramiv(program, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        char info[512];
-        glGetProgramInfoLog(program, 512, nullptr, info);
-        std::cout << "ERROR::PROGRAM::LINK::COMPILATION_FAILED\n" << info << std::endl;
-    }
-
-    return program;
 }
 
 GLuint loadVAO(GLuint vbo, GLuint ebo)
@@ -172,8 +99,8 @@ int main()
         return -1;
     }
 
-    Shader shader;
-    shader.Compile("shaders/simple.vertex", "shaders/simple.frag");
+    ProgramShader programShader;
+    programShader.Compile("shaders/simple.vertex", "shaders/simple.frag");
 
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -184,12 +111,7 @@ int main()
 
     auto vbo = loadVBO();
     auto ebo = loadEBO();
-    auto vertex = loadVertexShader();
-    auto fragment = loadFragmentShader();
-    auto program = loadShaderProgram(vertex, fragment);
     auto vao = loadVAO(vbo, ebo);
-    glDeleteShader(vertex);
-    glDeleteShader(fragment);
 
     //auto vertexColorUniform = glGetUniformLocation(program, "ourColor");
 
@@ -202,7 +124,8 @@ int main()
         glClearColor(0.2f, 0.4f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(program);
+        //glUseProgram(program);
+        programShader.Activate();
         //glUniform4f(vertexColorUniform, 1.0f, 1.0f, 0.0f, 1.0f);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
