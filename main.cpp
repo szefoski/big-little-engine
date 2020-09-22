@@ -1,3 +1,5 @@
+#include "shader.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -169,6 +171,9 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    Shader shader;
+    shader.Compile("shaders/simple.vertex", "shaders/simple.frag");
 
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
