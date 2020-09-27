@@ -83,6 +83,7 @@ namespace lbe
         const auto genericStringPath = texturePath.generic_string();
         const char* c_path = genericStringPath.c_str();
         int width, height, channels;
+        stbi_set_flip_vertically_on_load(true);
         unsigned char* data = stbi_load(c_path, &width, &height, &channels, 0);
 
         GLuint textureID;
