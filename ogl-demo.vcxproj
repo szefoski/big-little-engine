@@ -154,11 +154,15 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="program_shader.cpp" />
+    <ClCompile Include="shape.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="texture.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program_shader.h" />
+    <ClInclude Include="shape.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
