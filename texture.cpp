@@ -1,21 +1,22 @@
 #include "texture.h"
 
+#include "texturesBank.h"
+
 namespace lbe
 {
     void Texture::Prepare()
     {
-        m_textureId = loadTexture("res/debug_image.png");
         m_vboId = loadVBO();
         m_eboId = loadEBO();
         m_vaoId = loadVAO(m_vboId, m_eboId);
         programShader.Compile("shaders/texture.vert", "shaders/texture.frag");
     }
 
-    void Texture::Draw()
+    void Texture::Draw(GLuint textureId)
     {
         programShader.Activate();
-        //glUniform4f(vertexColorUniform, 1.0f, 1.0f, 0.0f, 1.0f);
-        glBindTexture(GL_TEXTURE_2D, m_textureId);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureId);
         glBindVertexArray(m_vaoId);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
@@ -76,28 +77,5 @@ namespace lbe
         glEnableVertexAttribArray(2);
 
         return vao;
-    }
-
-    GLuint Texture::loadTexture(const std::filesystem::path& texturePath)
-    {
-        const auto genericStringPath = texturePath.generic_string();
-        const char* c_path = genericStringPath.c_str();
-        int width, height, channels;
-        stbi_set_flip_vertically_on_load(true);
-        unsigned char* data = stbi_load(c_path, &width, &height, &channels, 0);
-
-        GLuint textureID;
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        stbi_image_free(data);
-
-        return textureID;
     }
 }

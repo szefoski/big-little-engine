@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "shape.h"
 #include "texture.h"
+#include "texturesBank.h"
 
 #include <array>
 #include <filesystem>
@@ -57,19 +58,22 @@ int init(GLFWwindow *&window)
 
     glViewport(0, 0, 800, 600);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    return 0;
 }
 
 void render(GLFWwindow* window)
 {
     lbe::Shape shape;
     shape.Prepare();
-
     //auto vertexColorUniform = glGetUniformLocation(program, "ourColor");
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     lbe::Texture texture;
     texture.Prepare();
+    auto textureShelfId = lbe::texturesBank::LoadTexture("res/container.jpg");
+    auto textureDebugImageId = lbe::texturesBank::LoadTexture("res/debug_image.png");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -80,7 +84,7 @@ void render(GLFWwindow* window)
 
         //texture.Draw();
         //shape.Draw();
-        texture.Draw();
+        texture.Draw(textureDebugImageId);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
