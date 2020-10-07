@@ -1,5 +1,7 @@
 #pragma once
 #include "glad/glad.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "program_shader.h"
 
 #include <filesystem>
@@ -21,6 +23,9 @@ namespace lbe
         GLuint m_vboId = 0;
         GLuint m_eboId = 0;
         GLuint m_vaoId = 0;
-        ProgramShader programShader;
+        ProgramShader m_programShader;
+        glm::mat4 m_transMatrix = glm::mat4(1.0f);
+        GLint m_transMatrixLoc = 0;
+        glm::f32* m_tranMatrixPtr = glm::value_ptr(m_transMatrix);
     };
 }

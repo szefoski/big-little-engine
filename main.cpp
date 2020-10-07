@@ -2,6 +2,9 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include "shape.h"
 #include "texture.h"
 #include "texturesBank.h"
@@ -64,6 +67,12 @@ int init(GLFWwindow *&window)
 
 void render(GLFWwindow* window)
 {
+    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+    vec = trans * vec;
+    std::cout << glm::to_string(trans) << std::endl;
+
     lbe::Shape shape;
     shape.Prepare();
     //auto vertexColorUniform = glGetUniformLocation(program, "ourColor");

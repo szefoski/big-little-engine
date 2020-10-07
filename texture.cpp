@@ -9,15 +9,21 @@ namespace lbe
         m_vboId = loadVBO();
         m_eboId = loadEBO();
         m_vaoId = loadVAO(m_vboId, m_eboId);
-        programShader.Compile("shaders/texture.vert", "shaders/texture.frag");
+        m_programShader.Compile("shaders/textureMatrix.vert", "shaders/textureMatrix.frag");
+        m_programShader.Activate();
+        m_transMatrixLoc = glGetUniformLocation(m_programShader.GetId(), "transform");
     }
 
     void Texture::Draw(GLuint textureId)
     {
-        programShader.Activate();
+        //trans = glm::translate(trans, glm::vec3(1.0f, 0.5f, 0.0f));
+        m_transMatrix = glm::rotate(m_transMatrix, glm::radians(-0.025f), glm::vec3(0.0, 0.0, 1.0));
+        //trans = glm::scale
+        m_programShader.Activate();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureId);
         glBindVertexArray(m_vaoId);
+        glUniformMatrix4fv(m_transMatrixLoc, 1, GL_FALSE, m_tranMatrixPtr);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
 
