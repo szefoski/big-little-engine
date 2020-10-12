@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="textureMVP.cpp" />
     <ClCompile Include="texturesBank.cpp" />
     <ClCompile Include="program_shader.cpp" />
     <ClCompile Include="shape.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="textureMVP.h" />
     <ClInclude Include="texturesBank.h" />
     <ClInclude Include="program_shader.h" />
     <ClInclude Include="shape.h" />
@@ -168,6 +170,8 @@
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\perspectiveTexture.frag" />
+    <None Include="shaders\perspectiveTexture.vert" />
     <None Include="shaders\simple.frag" />
     <None Include="shaders\simple.vert" />
     <None Include="shaders\texture.frag" />

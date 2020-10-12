@@ -7,6 +7,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include "shape.h"
 #include "texture.h"
+#include "textureMVP.h"
 #include "texturesBank.h"
 
 #include <array>
@@ -52,8 +53,13 @@ int init(GLFWwindow *&window)
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    //enable blending
     glEnable(GL_BLEND);// you enable blending function
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //enable z-buffer
+    glEnable(GL_DEPTH_TEST);
 
     int nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -79,7 +85,7 @@ void render(GLFWwindow* window)
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    lbe::Texture texture;
+    lbe::TextureMVP texture;
     texture.Prepare();
     auto textureShelfId = lbe::texturesBank::LoadTexture("res/container.jpg");
     auto textureDebugImageId = lbe::texturesBank::LoadTexture("res/debug_image.png");
@@ -89,7 +95,7 @@ void render(GLFWwindow* window)
         processInput(window);
 
         glClearColor(0.2f, 0.4f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //texture.Draw();
         //shape.Draw();
