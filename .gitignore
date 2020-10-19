@@ -34,5 +34,7 @@
 Debug
 dependencies
 .vs
+.vscode
+build
 
 *.vcxproj.user
