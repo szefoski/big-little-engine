@@ -1,3 +1,9 @@
+## Code formatiing
+```
+clang-format -i -style=file ~/myFile.cc
+```
+
+
 
 #Dependencies Linux
 ```

@@ -1,15 +1,18 @@
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-cmake_policy(VERSION 3.2)
+cmake_minimum_required(VERSION 3.0)
+project(GlmGit)
 
-set(GLM_VERSION "0.9.9")
-project(glm VERSION ${GLM_VERSION} LANGUAGES CXX)
-enable_testing()
+include(FetchContent)
 
-add_subdirectory(glm)
-add_library(glm::glm ALIAS glm)
+FetchContent_Declare(
+  glm_git
+  GIT_REPOSITORY https://github.com/g-truc/glm.git
+  GIT_TAG        0.9.9.8
+  GIT_PROGRESS   TRUE
+  USES_TERMINAL_DOWNLOAD TRUE
+)
 
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-
-add_subdirectory(test)
-
-endif(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+FetchContent_GetProperties(glm_git)
+if(NOT glm_git_POPULATED)
+  FetchContent_Populate(glm_git)
+  add_subdirectory(${glm_git_SOURCE_DIR} build)
+endif()

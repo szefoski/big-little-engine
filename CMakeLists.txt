@@ -1,39 +1,81 @@
 cmake_minimum_required( VERSION 3.1 )
 project( lbe_example_project )
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set( CMAKE_CXX_STANDARD 17 )
+set( CMAKE_CXX_STANDARD_REQUIRED ON )
+set( CMAKE_CXX_EXTENSIONS OFF )
+
+set( FETCHCONTENT_QUIET OFF CACHE BOOL "" )
+
+message("Chosen ${CMAKE_GENERATOR} generator")
+
+string(REPLACE " " "-" FETCHCONTENT_DIR_GENERATOR_NAME ${CMAKE_GENERATOR})
+set (FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/third-download-cache/${FETCHCONTENT_DIR_GENERATOR_NAME}" CACHE STRING "")
+
+# spdlog
+add_subdirectory( third/spdlog )
 
 # OpenGL
 find_package( OpenGL REQUIRED )
 include_directories( ${OPENGL_INCLUDE_DIRS} )
 
 # GLAD
-add_subdirectory(third/glad/)
+add_subdirectory( third/glad/ )
 
-# GLFW
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
-add_subdirectory( third/glfw )
-#include_directories(third/glfw/include)
+# stb_image
+add_subdirectory( third/stb/ )
 
 # GLM
 add_subdirectory( third/glm )
 
-add_executable(lbe_example
-    main.cpp
-    program_shader.cpp
-    shape.cpp
-    stb_image.cpp
-    texture.cpp
-    textureMVP.cpp
-    texturesBank.cpp
-    utils.cpp
+# GLFW
+add_subdirectory( third/glfw )
+
+# imgui //must be after GLFW and GLAD
+add_subdirectory( third/imgui )
+
+
+## LBE libary
+set( lbe_src
+    src/ogl_object_3d.cc
+    src/ogl_program_shader.cc
+    src/ogl_shape.cc
+    src/ogl_texture.cc
+    src/ogl_texture_mvp.cc
+    src/ogl_textures_bank.cc
+    src/utils.cc
     )
 
-target_link_libraries(lbe_example PRIVATE ${OPENGL_LIBRARIES} glad glfw glm)
+add_library(lbe ${lbe_src})
+target_include_directories(lbe PUBLIC include/)
 
-install(TARGETS lbe_example DESTINATION bin)
+target_link_libraries( lbe
+    PUBLIC
+    ${OPENGL_LIBRARIES}
+    glad
+    glfw
+    glm
+    stb
+    imgui
+    spdlog
+    )
+
+
+## App Example
+set( app_src
+    examples/basics/main.cc
+)
+
+add_executable( lbe_example
+    ${app_src}
+    )
+
+target_link_libraries( lbe_example
+    PRIVATE
+    lbe
+    )
+
+
+target_include_directories(glad PUBLIC include/)
+
+install( TARGETS lbe_example DESTINATION bin )

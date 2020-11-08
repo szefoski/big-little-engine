@@ -1,0 +1,11 @@
+{
+    "editor.tabSize": 2,
+    "cmake.configureOnOpen": true,
+    "cmake.debugConfig": {
+        "cwd": "${workspaceFolder}"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "files.associations": {
+        "filesystem": "cpp"
+    },
+}

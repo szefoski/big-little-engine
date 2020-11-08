@@ -32,9 +32,11 @@
 *.app
 
 Debug
-dependencies
+third-download-cache
 .vs
 .vscode
 build
+
+imgui.ini
 
 *.vcxproj.user
