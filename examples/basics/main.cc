@@ -1,5 +1,5 @@
 // clang-format off
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 // clang-format on
 #include <array>
@@ -47,10 +47,12 @@ int init(GLFWwindow*& window) {
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);  // vsync
 
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+  int version = gladLoadGL(glfwGetProcAddress);
+  if (version == 0) {
     spdlog::critical("Failed to initialize GLAD!");
     return -1;
   }
+  spdlog::info("Loaded OpenGL {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();

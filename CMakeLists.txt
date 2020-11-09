@@ -9,7 +9,7 @@ set( FETCHCONTENT_QUIET OFF CACHE BOOL "" )
 
 message("Chosen ${CMAKE_GENERATOR} generator")
 
-string(REPLACE " " "-" FETCHCONTENT_DIR_GENERATOR_NAME ${CMAKE_GENERATOR})
+string(REPLACE " " "_" FETCHCONTENT_DIR_GENERATOR_NAME ${CMAKE_GENERATOR})
 set (FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/third-download-cache/${FETCHCONTENT_DIR_GENERATOR_NAME}" CACHE STRING "")
 
 # spdlog
@@ -52,7 +52,7 @@ target_include_directories(lbe PUBLIC include/)
 target_link_libraries( lbe
     PUBLIC
     ${OPENGL_LIBRARIES}
-    glad
+    glad_build
     glfw
     glm
     stb
@@ -74,8 +74,5 @@ target_link_libraries( lbe_example
     PRIVATE
     lbe
     )
-
-
-target_include_directories(glad PUBLIC include/)
 
 install( TARGETS lbe_example DESTINATION bin )

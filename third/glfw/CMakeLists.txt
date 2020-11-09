@@ -8,17 +8,18 @@ set( GLFW_INSTALL OFF CACHE BOOL "" FORCE )
 
 include(FetchContent)
 
+set(PROJECT_DOWNLOAD_NAME glfw_git)
+
 FetchContent_Declare(
-  glfw_git
+  ${PROJECT_DOWNLOAD_NAME}
   GIT_REPOSITORY https://github.com/glfw/glfw.git
   GIT_TAG        3.3.2
   GIT_PROGRESS   TRUE
   USES_TERMINAL_DOWNLOAD TRUE
 )
 
-FetchContent_GetProperties(glfw_git)
-if(NOT glfw_git_POPULATED)
-  FetchContent_Populate(glfw_git)
-  set( GLFW_INCLUDE_DIR ${glfw_git_SOURCE_DIR}/include CACHE STRING "" )
-  add_subdirectory(${glfw_git_SOURCE_DIR} build)
+FetchContent_GetProperties(${PROJECT_DOWNLOAD_NAME})
+if(NOT ${PROJECT_DOWNLOAD_NAME}_POPULATED)
+  FetchContent_Populate(${PROJECT_DOWNLOAD_NAME})
+  add_subdirectory(${${PROJECT_DOWNLOAD_NAME}_SOURCE_DIR} build)
 endif()
